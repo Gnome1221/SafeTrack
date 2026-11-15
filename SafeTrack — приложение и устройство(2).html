@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SafeTrack — приложение и устройство</title>
+<style>
+:root{--bg:#E6EFF2;--ph:#F6FAFB;--cd:#fff;--ink:#0B2A33;--mut:#5A767F;--ln:#D6E3E8;--br:#009DBD;--go:#F5B800;--bad:#D83B3B;--ok:#139E6B;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#081317;--ph:#0E1C21;--cd:#162A31;--ink:#E6F3F6;--mut:#8DAEB8;--ln:#24404A;--br:#2CC4E3;--ok:#34D399;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#081317;--ph:#0E1C21;--cd:#162A31;--ink:#E6F3F6;--mut:#8DAEB8;--ln:#24404A;--br:#2CC4E3;--ok:#34D399;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible{outline:2px solid var(--br);outline-offset:2px}
+.tabs{display:none;padding:10px 16px}.tabs .seg{width:100%}.tabs button{flex:1;padding:8px}
+.stage{min-height:100vh;display:flex;align-items:center;justify-content:center;gap:56px;padding:24px}
+.pane{display:flex;flex-direction:column;align-items:center}
+#devp{width:540px;max-width:100%;gap:16px}
+#devp h1{margin:0;font-size:30px;letter-spacing:-1px;align-self:flex-start}#devp h1 i{font-style:normal;color:var(--br)}
+.flip{perspective:1400px;width:100%;aspect-ratio:85.6/54;cursor:pointer}
+.in{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.3,.7,.2,1)}
+.flip.on .in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:4.2%/6.6%;overflow:hidden;box-shadow:0 30px 50px -22px rgba(0,30,45,.65)}
+.face svg{display:block;width:100%;height:100%}.bk{transform:rotateY(180deg)}
+.pz{animation:pz 2s infinite}@keyframes pz{50%{stroke-opacity:.15}}
+[data-a=touch]{cursor:pointer}
+.specs{font-size:13px;color:var(--mut);text-align:center}
+.ctl{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{padding:8px 14px;border-radius:99px;background:var(--cd);border:1px solid var(--ln);font-weight:600;font-size:13px}
+.ly{width:100%;background:var(--cd);border:1px solid var(--ln);border-radius:18px;padding:14px 16px}
+.ly h3{margin:0 0 10px}
+.lr{display:flex;align-items:center;gap:12px;margin-bottom:3px;font-size:13px}.lr s{display:block;width:150px;border-radius:3px;flex:none}.lr em{font-style:normal;color:var(--mut);margin-left:auto}
+.phone{position:relative;width:390px;height:min(800px,calc(100vh - 48px));min-height:620px;background:var(--ph);border:10px solid #0B1B20;border-radius:46px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 60px -20px rgba(0,40,60,.4)}
+.sb{display:flex;justify-content:space-between;padding:12px 26px 0;font-weight:600;font-size:13px}
+#app{flex:1;overflow-y:auto;padding:14px 20px 96px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+h2{margin:0;font-size:26px;letter-spacing:-.5px}
+h3{margin:20px 0 10px;font-size:14px;color:var(--mut);font-weight:600}
+.logo{font-size:22px;letter-spacing:-.6px}.logo i{font-style:normal;color:var(--br)}
+.seg{display:flex;background:var(--cd);border:1px solid var(--ln);border-radius:99px;padding:3px}
+.seg button{padding:4px 11px;border-radius:99px;font-size:12px;font-weight:700;color:var(--mut)}
+.seg .on{background:var(--ink);color:var(--ph)}
+.pill{display:inline-flex;align-items:center;gap:7px;background:var(--cd);border:1px solid var(--ln);border-radius:99px;padding:5px 12px;font-size:13px;font-weight:600;margin-bottom:14px}
+.pill>i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px color-mix(in srgb,var(--ok) 25%,transparent)}
+.pill.bad>i{background:var(--bad);box-shadow:0 0 0 4px color-mix(in srgb,var(--bad) 25%,transparent)}
+.card{position:relative;aspect-ratio:85.6/54;border-radius:20px;padding:18px 20px;color:#fff;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(135deg,var(--c),color-mix(in srgb,var(--c) 55%,#000));box-shadow:0 18px 30px -14px var(--c);overflow:hidden}
+.card::after{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.1)}
+.card.pop{animation:pop .4s ease-out}
+@keyframes pop{0%{transform:scale(.94) rotate(-1.5deg)}60%{transform:scale(1.02)}100%{transform:none}}
+.r1{display:flex;justify-content:space-between;font-weight:700;font-size:13px;opacity:.9;z-index:1}
+.nm{font-size:21px;font-weight:700;letter-spacing:-.4px;z-index:1}.sub{font-size:12px;opacity:.85;z-index:1}
+.leds{display:flex;gap:5px;margin-top:6px;z-index:1}.leds i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.3)}.leds i.on{background:var(--go);box-shadow:0 0 8px var(--go)}
+.card.lock{background:#4C5E64;box-shadow:none;align-items:center;justify-content:center;text-align:center;font-weight:700}.big{font-size:42px}
+.bt{background:var(--cd);border:1px solid var(--ln);border-radius:16px;padding:12px 14px;margin-top:14px}
+.bt b{font-size:20px}.bt small{color:var(--mut);margin-left:8px}
+.bar{height:9px;background:var(--ln);border-radius:9px;overflow:hidden;margin-top:8px}.bar s{display:block;height:100%;background:linear-gradient(90deg,var(--br),var(--go));transition:width .12s}
+.bt.lo .bar s{background:var(--bad)}.bt.lo b{color:var(--bad)}
+.warn{margin-top:10px;padding:10px 14px;border-radius:14px;background:color-mix(in srgb,var(--bad) 14%,var(--cd));border:1px solid var(--bad);font-size:13px;font-weight:600}
+.cta{width:100%;margin-top:16px;padding:15px;border-radius:16px;background:var(--br);color:#fff;font-weight:700;font-size:16px;box-shadow:0 10px 20px -10px var(--br)}
+.cta:active{transform:scale(.98)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}.chips.wrap{flex-wrap:wrap;overflow:visible}
+.chip{flex:none;padding:8px 14px;border-radius:99px;background:var(--cd);border:1px solid var(--ln);font-weight:600;font-size:14px}.chip.on{background:var(--ink);color:var(--ph);border-color:var(--ink)}.chip.sy{opacity:.5}
+.st{color:var(--mut);font-size:13px;margin:12px 0 0}
+.cnt{color:var(--mut);font-weight:700}
+.list{display:flex;flex-direction:column;gap:8px}
+.row{display:flex;align-items:center;gap:12px;background:var(--cd);border:1px solid var(--ln);border-radius:16px;padding:10px 12px;cursor:pointer}
+.row.on{border-color:var(--br);box-shadow:0 0 0 2px color-mix(in srgb,var(--br) 30%,transparent)}
+.row.empty{background:none;border-style:dashed;opacity:.75}
+.slot{width:22px;color:var(--mut);font-weight:700;font-size:13px;text-align:center}
+.ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px}
+.tx{flex:1;min-width:0}.tx b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tx small{color:var(--mut);font-size:12px}.tx small.ok{color:var(--ok)}
+.row em{font-style:normal;font-size:11px;font-weight:700;background:var(--go);color:#3A2C00;padding:2px 8px;border-radius:99px}
+.x{width:28px;height:28px;border-radius:50%;color:var(--mut)}
+.scan{height:200px;display:grid;place-items:center;position:relative}
+.scan span{position:absolute;border:2px solid var(--br);border-radius:50%;animation:ring 2.2s infinite;opacity:0}
+.scan span:nth-child(2){animation-delay:.7s}.scan span:nth-child(3){animation-delay:1.4s}
+@keyframes ring{0%{width:60px;height:60px;opacity:.8}100%{width:200px;height:200px;opacity:0}}
+.scan b{font-size:54px;z-index:1}
+.ctr{text-align:center}.ctr p{color:var(--mut);margin:4px 0 0}
+.found{border-radius:14px;padding:10px 14px;font-weight:700;color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,var(--cd));border:1px solid var(--ok)}.found small{display:block;color:var(--mut);font-weight:500}
+.found.no{color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--cd));border-color:var(--bad)}
+label{display:block;margin:16px 0 8px;font-size:13px;font-weight:700;color:var(--mut)}
+input{width:100%;padding:13px 14px;border-radius:14px;border:1px solid var(--ln);background:var(--cd);color:var(--ink);font:inherit}
+.sw{display:flex;gap:12px}.sw button{width:34px;height:34px;border-radius:50%}.sw .on{box-shadow:0 0 0 3px var(--ph),0 0 0 5px var(--ink)}
+.grp{background:var(--cd);border:1px solid var(--ln);border-radius:18px;padding:4px 16px;margin-bottom:14px}
+.set{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--ln);font-weight:600;gap:10px}.set:last-child{border:0}
+.set small{display:block;color:var(--mut);font-weight:500;font-size:12px}
+.tg{width:48px;height:28px;border-radius:99px;background:var(--ln);position:relative;flex:none;transition:background .2s}
+.tg::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s}
+.tg.on{background:var(--ok)}.tg.on::after{transform:translateX(20px)}
+.mini{padding:7px 14px;border-radius:99px;background:var(--ink);color:var(--ph);font-size:13px;font-weight:700}
+.danger{border-color:color-mix(in srgb,var(--bad) 50%,var(--ln));padding:14px 16px}.danger p{margin:2px 0 12px;color:var(--mut);font-size:13px}
+.dgr{display:flex;gap:8px}.dgr button{flex:1;padding:12px;border-radius:14px;font-weight:700;background:var(--bad);color:#fff}.dgr .ghost{background:var(--ln);color:var(--ink)}
+.lg{display:flex;flex-direction:column;gap:10px;margin-top:18px}.lg button{padding:16px;border-radius:16px;background:var(--cd);border:1px solid var(--ln);font-weight:700;font-size:17px}
+nav{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-around;padding:8px 8px 14px;background:color-mix(in srgb,var(--ph) 88%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--ln)}
+nav button{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:700;color:var(--mut);padding:4px 10px}
+nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}nav .on{color:var(--br)}
+#toast{position:absolute;left:20px;right:20px;bottom:96px;background:var(--ink);color:var(--ph);padding:12px 16px;border-radius:14px;font-weight:600;text-align:center;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none}#toast.show{opacity:1;transform:none}
+@media (max-width:999px){.tabs{display:block}.stage{min-height:0;padding:8px 16px 16px;gap:0}#devp{display:none}[data-v=dev] #devp{display:flex}[data-v=dev] #appp{display:none}.phone{height:min(800px,calc(100dvh - 70px))}}
+@media (max-width:500px){.stage{padding:0}.phone{width:100%;border:0;border-radius:0;box-shadow:none}.sb{display:none}[data-v=dev] .stage{padding:8px 16px 24px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body data-v="app">
+<div class="tabs"><div class="seg"><button data-t="app" id="tA"></button><button data-t="dev" id="tD"></button></div></div>
+<div class="stage">
+<section class="pane" id="devp">
+<h1>Safe<i>Track</i></h1>
+<div class="flip"><div class="in"><div class="face" id="ff"></div><div class="face bk" id="fb"></div></div></div>
+<div class="specs" id="sp"></div>
+<div class="ctl"><button class="btn" data-a="flipb" id="fl"></button><button class="btn" data-a="bat" id="d2"></button><button class="btn" data-a="rst" id="d1"></button></div>
+<div class="ly"><h3 id="lh"></h3><div id="ly"></div></div>
+</section>
+<section class="pane" id="appp">
+<div class="phone"><div class="sb"><span>9:41</span><span>● ● ▮</span></div><main id="app"></main><div id="toast" role="status"></div><nav id="nav"></nav></div>
+</section>
+</div>
+<script>
+const L={
+ru:{app:"Приложение",home:"Главная",vault:"Ключи",add:"Добавить",set:"Настройки",w:"Включите SafeTrack: коснитесь сенсорной зоны на торце карты.",chl:"Выберите язык",srch:"Поиск устройства…",fnd:"Найдено устройство",con:"Подключить",pairing:"Сопряжение по BLE…",conn:"Подключено",locked:"Карта заблокирована",bat:"Заряд",days:"дн. автономности",low:"Заряд ниже 15%. Зарядите карту магнитным коннектором.",test:"Проверить на считывателе",granted:"Доступ разрешён",quick:"Быстрое переключение",sync:"Запись на карту…",onc:"Записан на карту",empty:"Свободный слот",tapadd:"Нажмите, чтобы добавить",addT:"Добавить ключ",hold:"Приложите карту к SafeTrack",holdp:"Держите неподвижно около 2 секунд.",scan:"Начать считывание",read:"Считывание UID…",found:"Карта найдена",ok2:"Совместима",bad:"Карта не поддерживается",badp:"Mifare DESFire EV2 защищена ключами интегратора, SafeTrack её не эмулирует.",retry:"Другая карта",name:"Название",type:"Тип доступа",color:"Цвет",save:"Зашифровать и сохранить",saved:"Профиль записан в слот",full:"Все 10 слотов заняты",fullp:"Удалите ключ, чтобы освободить слот.",sec:"Безопасность",lang:"Язык",pin:"PIN при смене ключа",bio:"Биометрия",fw:"Прошивка (OTA)",check:"Проверить",chk:"Проверка…",uptd:"Актуальная",kill:"Потеряли карту?",killp:"Kill Switch сразу заблокирует все ключи на карте.",killB:"Деактивировать карту",yes:"Да, деактивировать",no:"Отмена",restore:"Восстановить карту",del:"Удалить",act:"Активен",dele:"Ключ удалён",dev:"Устройство",flip:"Перевернуть",touch:"Касание сенсора переключает на следующий ключ.",spec:"85,6 × 54 × 2,0 мм · BLE 5.2 · 10 слотов · 14–20 дней",layers:"Слои карты (прототип, 2,0 мм)",d1:"Начать сначала",d2:"Разряд 12%",d3:"Заряд 88%",t_uni:"Вуз",t_office:"Офис",t_home:"Домофон",t_parking:"Паркинг",t_gym:"Фитнес"},
+en:{app:"App",home:"Home",vault:"Keys",add:"Add",set:"Settings",w:"Turn on SafeTrack: touch the sensor zone on the card edge.",chl:"Choose language",srch:"Searching for device…",fnd:"Device found",con:"Connect",pairing:"Pairing over BLE…",conn:"Connected",locked:"Card locked",bat:"Battery",days:"days of battery life",low:"Battery below 15%. Charge the card with the magnetic connector.",test:"Test at reader",granted:"Access granted",quick:"Quick switch",sync:"Writing to card…",onc:"Written to card",empty:"Empty slot",tapadd:"Tap to add",addT:"Add a key",hold:"Hold your card to SafeTrack",holdp:"Keep it still for about 2 seconds.",scan:"Start scanning",read:"Reading UID…",found:"Card found",ok2:"Compatible",bad:"Card not supported",badp:"Mifare DESFire EV2 is protected by integrator keys. SafeTrack cannot emulate it.",retry:"Try another card",name:"Name",type:"Access type",color:"Color",save:"Encrypt and save",saved:"Profile written to slot",full:"All 10 slots are used",fullp:"Delete a key to free up a slot.",sec:"Security",lang:"Language",pin:"PIN when switching keys",bio:"Biometrics",fw:"Firmware (OTA)",check:"Check",chk:"Checking…",uptd:"Up to date",kill:"Lost your card?",killp:"Kill Switch blocks every key on the card at once.",killB:"Deactivate card",yes:"Yes, deactivate",no:"Cancel",restore:"Restore card",del:"Delete",act:"Active",dele:"Key deleted",dev:"Device",flip:"Flip",touch:"Touching the sensor switches to the next key.",spec:"85.6 × 54 × 2.0 mm · BLE 5.2 · 10 slots · 14–20 days",layers:"Card layers (prototype, 2.0 mm)",d1:"Restart demo",d2:"Battery 12%",d3:"Battery 88%",t_uni:"University",t_office:"Office",t_home:"Intercom",t_parking:"Parking",t_gym:"Gym"},
+kk:{app:"Қолданба",home:"Басты бет",vault:"Кілттер",add:"Қосу",set:"Баптаулар",w:"SafeTrack-ті қосыңыз: картаның шетіндегі сенсорлық аймаққа тиіңіз.",chl:"Тілді таңдаңыз",srch:"Құрылғы ізделуде…",fnd:"Құрылғы табылды",con:"Қосу",pairing:"BLE арқылы жұптасу…",conn:"Қосылған",locked:"Карта бұғатталды",bat:"Заряд",days:"күн автономдылық",low:"Заряд 15%-дан төмен. Картаны магнитті коннектормен зарядтаңыз.",test:"Оқу құрылғысында тексеру",granted:"Рұқсат берілді",quick:"Жылдам ауысу",sync:"Картаға жазылуда…",onc:"Картаға жазылған",empty:"Бос слот",tapadd:"Қосу үшін басыңыз",addT:"Кілт қосу",hold:"Картаңызды SafeTrack-ке жақындатыңыз",holdp:"Шамамен 2 секунд қозғамай ұстаңыз.",scan:"Оқуды бастау",read:"UID оқылуда…",found:"Карта табылды",ok2:"Үйлесімді",bad:"Карта қолдау таппайды",badp:"Mifare DESFire EV2 интегратор кілттерімен қорғалған, SafeTrack оны эмуляциялай алмайды.",retry:"Басқа карта",name:"Атауы",type:"Қолжетімділік түрі",color:"Түсі",save:"Шифрлап сақтау",saved:"Профиль слотқа жазылды",full:"10 слоттың бәрі толы",fullp:"Орын босату үшін кілтті жойыңыз.",sec:"Қауіпсіздік",lang:"Тіл",pin:"Кілтті ауыстырғанда PIN",bio:"Биометрия",fw:"Микробағдарлама (OTA)",check:"Тексеру",chk:"Тексерілуде…",uptd:"Соңғы нұсқа",kill:"Картаны жоғалттыңыз ба?",killp:"Kill Switch картадағы барлық кілтті бірден бұғаттайды.",killB:"Картаны өшіру",yes:"Иә, өшіру",no:"Болдырмау",restore:"Картаны қалпына келтіру",del:"Жою",act:"Белсенді",dele:"Кілт жойылды",dev:"Құрылғы",flip:"Аудару",touch:"Сенсорға тиген кезде келесі кілтке ауысады.",spec:"85,6 × 54 × 2,0 мм · BLE 5.2 · 10 слот · 14–20 күн",layers:"Карта қабаттары (прототип, 2,0 мм)",d1:"Басынан бастау",d2:"Заряд 12%",d3:"Заряд 88%",t_uni:"Университет",t_office:"Кеңсе",t_home:"Домофон",t_parking:"Паркинг",t_gym:"Фитнес"}};
+const ico={uni:"🎓",office:"🏢",home:"🏠",parking:"🅿️",gym:"🏋️"},types=Object.keys(ico),cols=["#1E5BD8","#0E7C66","#E07A1F","#6B4EE0","#D6336C"],LB={kk:"KZ",ru:"RU",en:"EN"},LN={kk:"Қазақша",ru:"Русский",en:"English"};
+const K=(n,t,c,u)=>({n,t,c,u});
+const S={lang:"ru",tab:"home",onb:0,pr:0,p:0,n:0,sy:-1,active:0,locked:false,bat:88,pin:true,bio:false,pop:0,confirm:false,fw:0,add:null,
+keys:[K("AITU Turnstile","uni","#1E5BD8","3F:A2:91:0C"),K("AIFC Office","office","#0E7C66","7B:10:C4:E2"),K("ЖК Домофон","home","#E07A1F","04:5D:A9"),K("Parking Gate","parking","#6B4EE0","9A:3C:77:15"),K("Fitness Club","gym","#D6336C","C1:08:5E:B4"),null,null,null,null,null]};
+const $=s=>document.querySelector(s),t=k=>L[S.lang][k],esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const svg={home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',vault:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h4"/>',add:'<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',set:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>'};
+const seg=()=>`<div class="seg">${Object.keys(LB).map(l=>`<button data-a="lang" data-v="${l}" class="${S.lang===l?"on":""}">${LB[l]}</button>`).join("")}</div>`;
+/* ---------- device ---------- */
+const FR=()=>{const c=S.locked?"#E5484D":S.bat<15?"#FF7A3D":"#F5B800";let l="";
+for(let i=0;i<10;i++){const on=i===S.active,x=76+i*50;l+=`<circle cx="${x}" cy="410" r="${on?12:8}" fill="${on?c:S.locked?"#4A2A2E":"#2C4A55"}" ${on?'filter="url(#g)"':""}/><text x="${x}" y="456" text-anchor="middle" font-size="17" fill="${on?c:"#6E8C97"}">${i+1}</text>`}
+return `<svg viewBox="0 0 856 540"><defs><linearGradient id="fg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1E4450"/><stop offset="1" stop-color="#091A20"/></linearGradient><linearGradient id="sh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".12"/><stop offset=".4" stop-color="#fff" stop-opacity="0"/></linearGradient><filter id="g" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<rect width="856" height="540" fill="url(#fg)"/><path d="M0 330C200 270 420 380 856 300V540H0Z" fill="#009DBD" opacity=".16"/><path d="M0 330C200 270 420 380 856 300" stroke="#F5B800" stroke-width="3" fill="none" opacity=".8"/><rect width="856" height="540" fill="url(#sh)"/>
+<text x="56" y="120" font-size="58" font-weight="700" fill="#fff" letter-spacing="-2">Safe<tspan fill="#2CC4E3">Track</tspan></text><text x="58" y="158" font-size="22" fill="#8DAEB8">Smart Access Card</text>
+<g transform="translate(676 52) scale(2.4)" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><path d="M8 6c3 3 3 9 0 12M12 4c4.5 4 4.5 12 0 16M16 2c6 5 6 15 0 20"/></g>
+${l}
+<g data-a="touch"><rect x="752" y="170" width="62" height="250" rx="31" fill="#fff" fill-opacity=".08" stroke="#fff" stroke-opacity=".35" stroke-width="2"/><rect class="pz" x="744" y="162" width="78" height="266" rx="39" fill="none" stroke="#2CC4E3" stroke-width="3"/><path d="M771 232l12-12 12 12M771 358l12 12 12-12" stroke="#fff" stroke-opacity=".7" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="783" cy="295" r="15" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="3"/></g></svg>`};
+const BK=(()=>{let s="";for(let i=0;i<5;i++)s+=`<rect x="${34+i*13}" y="${34+i*13}" width="${788-26*i}" height="${472-26*i}" rx="${26-i*3}" fill="none" stroke="#F5B800" stroke-opacity=".7" stroke-width="3"/>`;
+for(let i=0;i<6;i++)s+=`<circle cx="235" cy="250" r="${26+i*11}" fill="none" stroke="#2CC4E3" stroke-opacity=".8" stroke-width="3"/>`;
+return `<svg viewBox="0 0 856 540" font-size="18"><defs><linearGradient id="bk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0E3A45"/><stop offset="1" stop-color="#071A20"/></linearGradient></defs><rect width="856" height="540" fill="url(#bk)"/>${s}
+<text x="110" y="132" fill="#F5B800" font-size="20">13.56 MHz HF</text><text x="235" y="372" text-anchor="middle" fill="#2CC4E3" font-size="20">125 kHz LF</text>
+<rect x="400" y="130" width="120" height="110" rx="10" fill="#1E4450" stroke="#8DAEB8" stroke-width="2"/><text x="460" y="188" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">nRF52840</text><text x="460" y="214" text-anchor="middle" fill="#8DAEB8" font-size="15">BLE 5.2</text>
+<rect x="400" y="270" width="300" height="120" rx="14" fill="#0F4A44" stroke="#34D399" stroke-width="2"/><text x="550" y="338" text-anchor="middle" fill="#34D399" font-size="26" font-weight="700">Li-Pol 180 mAh</text>
+<circle cx="590" cy="170" r="20" fill="#F5B800"/><circle cx="650" cy="170" r="20" fill="#F5B800"/><text x="620" y="220" text-anchor="middle" fill="#F5B800" font-size="15">magnetic charging</text>
+<text x="428" y="440" text-anchor="middle" fill="#8DAEB8" font-size="17">ISO/IEC 7810 ID-1 · 85.6 × 54 mm</text></svg>`})();
+const LY=[["Laminate",.2,"#8DAEB8"],["PCB · nRF52840 · LED",.5,"#1E4450"],["Li-Pol 180 mAh",.8,"#34D399"],["Antenna HF + LF",.3,"#F5B800"],["Laminate",.2,"#8DAEB8"]];
+/* ---------- app ---------- */
+const card=k=>S.locked?`<div class="card lock ${S.pop?"pop":""}"><div class="big">🔒</div><p>${t("locked")}</p></div>`:
+`<div class="card ${S.pop?"pop":""}" style="--c:${k?k.c:"#5E7F89"}"><div class="r1"><span>SafeTrack</span><span>${S.active+1} / 10</span></div><div><div class="nm">${k?esc(k.n):t("empty")}</div><div class="sub">${k?t("t_"+k.t)+" · "+k.u:""}</div><div class="leds">${S.keys.map((_,i)=>`<i class="${i===S.active?"on":""}"></i>`).join("")}</div></div></div>`;
+const O=()=>S.onb===0?`<div class="top"><b class="logo">Safe<i>Track</i></b></div><div class="scan"><span></span><span></span><span></span><b>💳</b></div><div class="ctr"><p>${t("w")}</p></div><h3>${t("chl")}</h3><div class="lg">${Object.keys(LN).map(l=>`<button data-a="ol" data-v="${l}">${LN[l]}</button>`).join("")}</div>`:
+`<div class="top"><b class="logo">Safe<i>Track</i></b>${seg()}</div><div class="scan"><span></span><span></span><span></span><b>📡</b></div><div class="ctr"><h2>${S.pr===0?t("srch"):S.pr===1?t("fnd"):t("pairing")}</h2>${S.pr?"<p>SafeTrack-7F2A · BLE 5.2</p>":""}</div>${S.pr===1?`<button class="cta" data-a="pair">${t("con")}</button>`:""}${S.pr===2?`<div class="bar"><s style="width:${S.p}%"></s></div>`:""}`;
+const H=()=>{const k=S.keys[S.active],lo=S.bat<15;return `<div class="top"><b class="logo">Safe<i>Track</i></b>${seg()}</div>
+<span class="pill ${S.locked?"bad":""}"><i></i>${S.locked?t("locked"):t("conn")} · SafeTrack-7F2A</span>${card(k)}
+<div class="bt ${lo?"lo":""}"><b>${S.bat}%</b><small>${t("bat")} · ≈ ${Math.round(S.bat*.18)} ${t("days")}</small><div class="bar"><s style="width:${S.bat}%"></s></div></div>${lo?`<div class="warn">⚠ ${t("low")}</div>`:""}
+<button class="cta" data-a="test">${t("test")}</button><h3>${t("quick")}</h3><div class="chips">${S.keys.map((x,i)=>x?`<button class="chip ${i===S.active?"on":""} ${i===S.sy?"sy":""}" data-a="pick" data-v="${i}">${ico[x.t]} ${esc(x.n)}</button>`:"").join("")}</div>
+<p class="st">${S.sy>=0?"↻ "+t("sync"):"✓ "+t("onc")+" · "+(S.active+1)+" / 10"}</p>`};
+const V=()=>`<div class="top"><h2>${t("vault")}</h2><span class="cnt">${S.keys.filter(Boolean).length} / 10</span></div><div class="list">${S.keys.map((k,i)=>k?`<div class="row ${i===S.active?"on":""}" data-a="pick" data-v="${i}"><span class="slot">${i+1}</span><span class="ic" style="background:${k.c}">${ico[k.t]}</span><div class="tx"><b>${esc(k.n)}</b><small>${t("t_"+k.t)} · ${k.u}</small><small class="${i===S.sy?"":"ok"}">${i===S.sy?"↻ "+t("sync"):"✓ "+t("onc")}</small></div>${i===S.active?`<em>${t("act")}</em>`:""}<button class="x" data-a="del" data-v="${i}" aria-label="${t("del")}">✕</button></div>`:`<div class="row empty" data-a="empty"><span class="slot">${i+1}</span><span class="ic">＋</span><div class="tx"><b>${t("empty")}</b><small>${t("tapadd")}</small></div></div>`).join("")}</div>`;
+const A=()=>{const a=S.add,h=`<div class="top"><h2>${t("addT")}</h2></div>`;
+if(!a&&!S.keys.includes(null))return h+`<div class="ctr scan"><b>🗂️</b></div><div class="ctr"><h2>${t("full")}</h2><p>${t("fullp")}</p></div>`;
+if(!a)return h+`<div class="scan"><span></span><span></span><span></span><b>💳</b></div><div class="ctr"><b>${t("hold")}</b><p>${t("holdp")}</p></div><button class="cta" data-a="scan">${t("scan")}</button>`;
+if(a.step===1)return h+`<div class="scan"><span></span><span></span><span></span><b>📡</b></div><div class="ctr"><b>${t("read")}</b></div><div class="bar"><s style="width:${S.p}%"></s></div>`;
+if(a.step===3)return h+`<div class="found no">✕ ${t("bad")}<small>${t("badp")}</small></div><button class="cta" data-a="retry">${t("retry")}</button>`;
+return h+`<div class="found">✓ ${t("found")} · ${t("ok2")}<small>${a.tech} · UID ${a.u}</small></div>
+<label for="nm">${t("name")}</label><input id="nm" value="${esc(a.n)}" placeholder="${t("t_"+a.t)}" maxlength="22">
+<label>${t("type")}</label><div class="chips wrap">${types.map(x=>`<button class="chip ${a.t===x?"on":""}" data-a="type" data-v="${x}">${ico[x]} ${t("t_"+x)}</button>`).join("")}</div>
+<label>${t("color")}</label><div class="sw">${cols.map(c=>`<button class="${a.c===c?"on":""}" style="background:${c}" data-a="color" data-v="${c}" aria-label="${c}"></button>`).join("")}</div><button class="cta" data-a="save">🔐 ${t("save")}</button>`};
+const tg=(k,a)=>`<button class="tg ${k?"on":""}" role="switch" aria-checked="${k}" data-a="${a}"></button>`;
+const G=()=>`<div class="top"><h2>${t("sec")}</h2></div>
+<div class="grp"><div class="set"><span>${t("lang")}</span>${seg()}</div><div class="set"><span>${t("pin")}</span>${tg(S.pin,"pin")}</div><div class="set"><span>${t("bio")}</span>${tg(S.bio,"bio")}</div>
+<div class="set"><span>${t("fw")}<small>SafeTrack-7F2A · v1.0.3</small></span><button class="mini" data-a="fw">${S.fw===1?t("chk"):S.fw===2?"✓ "+t("uptd"):t("check")}</button></div></div>
+<div class="grp danger"><b>${t("kill")}</b><p>${t("killp")}</p><div class="dgr">${S.locked?`<button class="ghost" data-a="restore">${t("restore")}</button>`:S.confirm?`<button data-a="killY">${t("yes")}</button><button class="ghost" data-a="killN">${t("no")}</button>`:`<button data-a="kill">${t("killB")}</button>`}</div></div>`;
+function R(){const o=S.onb!==null;$("#app").innerHTML=o?O():{home:H,vault:V,add:A,set:G}[S.tab]();
+$("#nav").style.display=o?"none":"flex";$("#nav").innerHTML=["home","vault","add","set"].map(x=>`<button data-go="${x}" class="${S.tab===x?"on":""}"><svg viewBox="0 0 24 24">${svg[x]}</svg>${t(x)}</button>`).join("");
+$("#ff").innerHTML=FR();$("#fb").innerHTML=BK;
+$("#tA").textContent=t("app");$("#tD").textContent=t("dev");$("#sp").textContent=t("spec")+" · "+t("touch");$("#fl").textContent="⟲ "+t("flip");$("#d1").textContent="↺ "+t("d1");$("#d2").textContent="🔋 "+(S.bat<15?t("d3"):t("d2"));$("#lh").textContent=t("layers");
+$("#ly").innerHTML=LY.map(x=>`<div class="lr"><s style="height:${x[1]*34}px;background:${x[2]}"></s>${x[0]}<em>${x[1].toString().replace(".",",")} ${S.lang==="en"?"mm":"мм"}</em></div>`).join("");
+document.documentElement.lang=S.lang;S.pop=0}
+let tt,iv;const toast=m=>{const e=$("#toast");e.textContent=m;e.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>e.classList.remove("show"),2200)};
+const run=cb=>{clearInterval(iv);S.p=0;iv=setInterval(()=>{S.p=Math.min(100,S.p+7);if(S.p>=100){clearInterval(iv);cb()}R()},130)};
+const go=x=>{if(x!=="add"){clearInterval(iv);S.add=null}S.tab=x;R()};
+const hex=()=>Math.floor(Math.random()*256).toString(16).padStart(2,"0").toUpperCase();
+const scan=()=>{S.add={step:1};run(()=>{const r=S.n++%3;S.add=r===2?{step:3}:{step:2,u:r?[hex(),hex(),hex(),hex()].join(":"):[hex(),hex(),hex(),hex()].join(":"),tech:r?"EM-Marine · 125 kHz":"Mifare Classic 1K · 13.56 MHz",n:"",t:"office",c:cols[1]}})};
+document.addEventListener("input",e=>{if(e.target.id==="nm")S.add.n=e.target.value});
+document.addEventListener("click",e=>{
+const tb=e.target.closest("[data-t]");if(tb){document.body.dataset.v=tb.dataset.t;return}
+const f=e.target.closest(".flip");if(f&&!e.target.closest("[data-a]"))return f.classList.toggle("on");
+const n=e.target.closest("[data-go]");if(n)return go(n.dataset.go);
+const b=e.target.closest("[data-a]");if(!b)return;const a=b.dataset.a,v=b.dataset.v,i=+v;
+if(a==="lang")S.lang=v;
+else if(a==="ol"){S.lang=v;S.onb=1;S.pr=0;setTimeout(()=>{if(S.onb===1){S.pr=1;R()}},1600)}
+else if(a==="pair"){S.pr=2;run(()=>{S.onb=null;S.tab="home";S.pop=1;toast("✓ "+t("conn"))})}
+else if(a==="pick"){if(S.locked)return toast("🔒 "+t("locked"));if(i===S.active||S.sy>=0)return;S.sy=i;setTimeout(()=>{S.active=i;S.sy=-1;S.pop=1;R();toast(ico[S.keys[i].t]+" "+S.keys[i].n+" ✓")},700)}
+else if(a==="touch"){if(S.locked)return toast("🔒 "+t("locked"));const f=S.keys.map((k,j)=>k?j:-1).filter(j=>j>=0);if(!f.length)return;const nx=f.find(j=>j>S.active);S.active=nx===undefined?f[0]:nx;S.pop=1;toast(ico[S.keys[S.active].t]+" "+S.keys[S.active].n)}
+else if(a==="test"){if(S.locked)return toast("🔒 "+t("locked"));const k=S.keys[S.active];if(!k)return toast(t("empty"));S.pop=1;toast("✓ "+t("granted")+" · "+k.n+" · 0.2 s")}
+else if(a==="del"){S.keys[i]=null;if(S.active===i)S.active=Math.max(0,S.keys.findIndex(Boolean));toast(t("dele"))}
+else if(a==="empty")return go("add");
+else if(a==="scan")return scan();
+else if(a==="retry"){S.add=null}
+else if(a==="type")S.add.t=v;
+else if(a==="color")S.add.c=v;
+else if(a==="save"){const s=S.keys.indexOf(null);S.keys[s]={n:S.add.n.trim()||t("t_"+S.add.t),t:S.add.t,c:S.add.c,u:S.add.u};S.active=s;S.add=null;S.tab="home";S.pop=1;toast("🔐 "+t("saved")+" "+(s+1))}
+else if(a==="pin")S.pin=!S.pin;else if(a==="bio")S.bio=!S.bio;
+else if(a==="kill")S.confirm=true;else if(a==="killN")S.confirm=false;
+else if(a==="killY"){S.locked=true;S.confirm=false;toast("🔒 "+t("locked"))}
+else if(a==="restore"){S.locked=false;S.pop=1;toast("✓ "+t("conn"))}
+else if(a==="fw"){if(S.fw)return;S.fw=1;setTimeout(()=>{S.fw=2;if(S.tab==="set")R()},1600)}
+else if(a==="flipb")$(".flip").classList.toggle("on");
+else if(a==="bat")S.bat=S.bat<15?88:12;
+else if(a==="rst"){clearInterval(iv);Object.assign(S,{onb:0,pr:0,tab:"home",locked:false,add:null,bat:88,sy:-1,confirm:false,fw:0})}
+R()});
+R();
+</script>
+</body>
+</html>
